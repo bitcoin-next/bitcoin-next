@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin 2.0 Network</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        header {
+            background-color: #1e1e2f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .button {
+            margin: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+        }
+        .status {
+            font-size: 20px;
+            margin-top: 20px;
+            color: #333;
+        }
+        .transaction-list {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .transaction {
+            margin-bottom: 10px;
+            padding: 8px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bitcoin 2.0 Network</h1>
+    <button class="button" onclick="startMining()">Start Mining</button>
+    <button class="button" onclick="sendTransaction()">Send Transaction</button>
+</header>
+
+<div class="container">
+    <div id="status" class="status">Waiting for network...</div>
+    <div id="transactions" class="transaction-list">
+        <h2>Transactions:</h2>
+    </div>
+</div>
+
+<script>
+    // Blockchain implementation
+    class Blockchain {
+        constructor() {
+            this.chain = [];
+            this.pendingTransactions = [];
+            this.createGenesisBlock();
+        }
+
+        createGenesisBlock() {
+            const block = {
+                index: 0,
+                timestamp: Date.now(),
+                transactions: [],
+                previousHash: null,
+                hash: this.calculateHash(0, Date.now(), [], null),
+            };
+            this.chain.push(block);
+        }
+
+        calculateHash(index, timestamp, transactions, previousHash) {
+            return (index + timestamp + JSON.stringify(transactions) + previousHash).toString(36);
+        }
+
+        addBlock(block) {
+            this.chain.push(block);
+        }
+
+        minePendingTransactions(difficulty) {
+            const lastBlock = this.chain[this.chain.length - 1];
+            const block = {
+                index: this.chain.length,
+                timestamp: Date.now(),
+                transactions: this.pendingTransactions,
+                previousHash: lastBlock.hash,
+                hash: this.calculateHash(this.chain.length, Date.now(), this.pendingTransactions, lastBlock.hash),
+            };
+
+            while (block.hash.substring(0, difficulty) !== '0'.repeat(difficulty)) {
+                block.hash = this.calculateHash(block.index, block.timestamp, block.transactions, block.previousHash);
+            }
+
+            this.addBlock(block);
+            this.pendingTransactions = [];
+            console.log('Mined new block:', block);
+        }
+    }
+
+    class Wallet {
+        constructor() {
+            this.privateKey = this.generatePrivateKey();
+            this.publicKey = this.generatePublicKey(this.privateKey);
+        }
+
+        generatePrivateKey() {
+            return Math.random().toString(36).substring(2, 42);
+        }
+
+        generatePublicKey(privateKey) {
+            return privateKey.substring(0, 32);  // Simple mock of public key generation
+        }
+
+        signTransaction(transaction) {
+            return this.privateKey + '-' + Math.random().toString(36).substring(2, 42); // Mock signature
+        }
+    }
+
+    // P2P Network Implementation
+    class P2PServer {
+        constructor(port) {
+            this.port = port;
+            this.sockets = [];
+            this.server = new WebSocket.Server({ port: this.port });
+
+            this.server.on('connection', (socket) => this.connectSocket(socket));
+        }
+
+        connectSocket(socket) {
+            this.sockets.push(socket);
+            socket.on('message', (message) => this.handleMessage(socket, message));
+            socket.on('close', () => this.removeSocket(socket));
+        }
+
+        removeSocket(socket) {
+            this.sockets = this.sockets.filter(s => s !== socket);
+        }
+
+        handleMessage(socket, message) {
+            const data = JSON.parse(message);
+            console.log('Received message:', data);
+
+            if (data.type === 'newTransaction') {
+                const transaction = data.transaction;
+                console.log('New Transaction received:', transaction);
+                this.broadcast({ type: 'newTransaction', transaction });
+            }
+        }
+
+        broadcast(message) {
+            this.sockets.forEach(socket => socket.send(JSON.stringify(message)));
+        }
+    }
+
+    // WebSocket Client
+    class P2PClient {
+        constructor(port) {
+            this.socket = new WebSocket(`ws://localhost:${port}`);
+            this.socket.on('open', () => {
+                console.log(`Connected to server on port ${port}`);
+            });
+
+            this.socket.on('message', (message) => {
+                const data = JSON.parse(message);
+                console.log('Received from peer:', data);
+            });
+        }
+
+        sendMessage(message) {
+            this.socket.send(JSON.stringify(message));
+        }
+    }
+
+    // Main Application Logic
+    const blockchain = new Blockchain();
+    const wallet = new Wallet();
+    let p2pServer = new P2PServer(6001);
+    let p2pClient = new P2PClient(6001);
+
+    // Event Handlers
+    function startMining() {
+        blockchain.minePendingTransactions(4);
+        updateStatus('Mining started...');
+    }
+
+    function sendTransaction() {
+        const transaction = {
+            from: wallet.publicKey,
+            to: 'recipient-address',
+            amount: 50,
+        };
+        const signature = wallet.signTransaction(transaction);
+        const signedTransaction = { ...transaction, signature };
+
+        // Send transaction to P2P network
+        p2pServer.broadcast({ type: 'newTransaction', transaction: signedTransaction });
+        updateTransactionList(signedTransaction);
+    }
+
+    function updateStatus(message) {
+        document.getElementById('status').innerText = message;
+    }
+
+    function updateTransactionList(transaction) {
+        const transactionElement = document.createElement('div');
+        transactionElement.classList.add('transaction');
+        transactionElement.innerHTML = `<strong>From:</strong> ${transaction.from} <br><strong>To:</strong> ${transaction.to} <br><strong>Amount:</strong> ${transaction.amount} <br><strong>Signature:</strong> ${transaction.signature}`;
+        document.getElementById('transactions').appendChild(transactionElement);
+    }
+</script>
+
+<script>
+    // Initialize WebSocket server on port 6001 (assuming this file is part of the server-side)
+    const WebSocket = require('ws');
+    new P2PServer(6001);
+</script>
+
+</body>
+</html>
