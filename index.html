@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Bitcoin Next - 혁신적인 비트코인 2.0</title>
+    <title>Bitcoin Next - The Future of Cryptocurrency</title>
     <style>
         /* Reset and Global Styles */
         * {
@@ -14,20 +14,22 @@
         }
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f4f4;
             color: #333;
         }
 
         /* Header */
         header {
-            background: #00bcd4;
+            background: linear-gradient(45deg, #00bcd4, #0288d1);
             padding: 20px 0;
             text-align: center;
             color: white;
+            transition: background-color 0.5s ease;
         }
         header h1 {
-            font-size: 3em;
+            font-size: 3.5em;
             font-weight: bold;
+            letter-spacing: 2px;
         }
         header nav {
             margin-top: 10px;
@@ -36,56 +38,88 @@
             color: white;
             text-decoration: none;
             margin: 0 20px;
-            font-size: 1.2em;
+            font-size: 1.3em;
+            transition: color 0.3s ease;
+        }
+        header nav a:hover {
+            color: #ffeb3b;
         }
 
         /* Main Section */
         .main-section {
-            padding: 40px 20px;
-            background: #ffffff;
+            padding: 80px 20px;
+            background: linear-gradient(135deg, #ffffff, #f9f9f9);
             text-align: center;
+            animation: fadeIn 2s ease-in-out;
         }
         .main-section h2 {
-            font-size: 2.5em;
+            font-size: 3.2em;
             color: #333;
+            margin-bottom: 20px;
         }
         .main-section p {
-            font-size: 1.2em;
+            font-size: 1.3em;
             color: #555;
-            margin: 20px 0;
+            margin: 20px auto;
+            max-width: 900px;
+            line-height: 1.6;
         }
         .highlight {
             color: #00bcd4;
             font-weight: bold;
         }
-        
+
         .feature {
             display: flex;
             justify-content: space-around;
-            margin-top: 30px;
+            margin-top: 50px;
+            animation: slideUp 1s ease-in-out;
         }
         .feature div {
             background-color: #f1f1f1;
-            padding: 20px;
+            padding: 40px;
             width: 30%;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transform: translateY(10px);
+            transition: transform 0.3s ease-in-out;
+        }
+        .feature div:hover {
+            transform: translateY(-10px);
         }
         .feature div h3 {
-            font-size: 1.5em;
+            font-size: 1.8em;
             color: #333;
+            margin-bottom: 20px;
         }
         .feature div p {
-            font-size: 1.1em;
+            font-size: 1.2em;
             color: #666;
+        }
+
+        /* Button */
+        .cta-button {
+            background-color: #ffeb3b;
+            color: #333;
+            padding: 20px 40px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            margin-top: 40px;
+        }
+        .cta-button:hover {
+            background-color: #fbc02d;
         }
 
         /* Footer */
         footer {
             background-color: #333;
             color: white;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
+            margin-top: 50px;
         }
         footer a {
             color: white;
@@ -94,6 +128,17 @@
         }
         footer a:hover {
             text-decoration: underline;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            0% { transform: translateY(20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
         }
     </style>
 </head>
@@ -110,22 +155,24 @@
     </header>
 
     <section class="main-section">
-        <h2>Bitcoin 2.0: 혁신적인 비트코인 네트워크</h2>
-        <p>20년의 시간이 흐른 후, 이제는 사람들이 비트코인의 가치를 완전히 이해하고 버리지 않는 시대가 왔습니다. Bitcoin Next는 이 혁신적인 시스템의 차세대 진화입니다.</p>
-        <p>기존 비트코인 네트워크의 핵심 원칙을 따르면서도 더 빠른 채굴과 더 효율적인 네트워크를 제공합니다. 또한, **Node.js** 기반으로 구현되어, 어떤 환경에서도 쉽게 확장할 수 있습니다.</p>
+        <h2>The Future of Cryptocurrency: Bitcoin 2.0</h2>
+        <p>Bitcoin Next is the evolution of the original Bitcoin network, improving on its core principles with faster mining, optimized blockchain scalability, and a decentralized node network that runs on <span class="highlight">Node.js</span>. In this new era, Bitcoin's value is recognized globally, and its adoption has increased exponentially.</p>
+        <p>After 20 years of development, the hardware technology and network speeds have drastically improved. Bitcoin Next is not just a cryptocurrency—it's a next-generation network with speed, security, and scalability at its core.</p>
+
+        <a href="#" class="cta-button">Join the Revolution</a>
 
         <div class="feature">
             <div>
-                <h3>빠른 채굴 속도</h3>
-                <p>하드웨어의 발전으로 채굴 속도가 현저히 빨라졌습니다. 이번에는 **채굴 반감기**가 기존보다 더 빠르게 도달할 것으로 예상됩니다.</p>
+                <h3>Faster Mining</h3>
+                <p>With the advancements in hardware, Bitcoin Next offers incredibly fast mining speeds. The halving event in Bitcoin Next will happen at a much faster pace, leading to faster rewards and more efficient mining cycles.</p>
             </div>
             <div>
-                <h3>Node.js 기반</h3>
-                <p>비트코인 네트워크가 **Node.js** 기반으로 동작하며, 자바스크립트 기반으로 전세계 어디서든 운영 가능합니다. 이는 개발자들에게 혁신적인 자유를 제공합니다.</p>
+                <h3>Node.js Powered Network</h3>
+                <p>Built on the powerful and versatile <span class="highlight">Node.js</span> platform, Bitcoin Next nodes can be deployed anywhere. The decentralized network can run on any server or device, offering flexibility and scalability like never before.</p>
             </div>
             <div>
-                <h3>구글과의 협업</h3>
-                <p>Google Cloud와 함께 **Bitcoin Next**는 글로벌 네트워크로 확장하고, 안정성과 성능을 더욱 향상시킵니다.</p>
+                <h3>Global Partnerships</h3>
+                <p>Bitcoin Next is partnering with industry giants like Google to expand its reach globally. Our collaboration ensures reliability, performance, and the infrastructure needed to support the growing demand of the cryptocurrency world.</p>
             </div>
         </div>
     </section>
@@ -133,14 +180,14 @@
     <footer>
         <p>&copy; 2025 Bitcoin Next. All rights reserved.</p>
         <p>
-            <a href="#">Privacy Policy</a> | 
-            <a href="#">Terms of Service</a> | 
+            <a href="#">Privacy Policy</a> |
+            <a href="#">Terms of Service</a> |
             <a href="#">Contact Us</a>
         </p>
     </footer>
 
     <script>
-        // 간단한 애니메이션 효과
+        // Scroll animation for header background change
         window.addEventListener('scroll', function() {
             const header = document.querySelector('header');
             if (window.scrollY > 50) {
