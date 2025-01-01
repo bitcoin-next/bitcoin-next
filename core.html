@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin 2.0 Core</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #1e1e2f;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            font-size: 3em;
+        }
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+        .wallet, .blockchain, .mining {
+            background-color: #fff;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 700px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #1e1e2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2c2c3d;
+        }
+        .block {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .block ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .block li {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Bitcoin 2.0 Core</h1>
+</header>
+
+<div class="content">
+    <div class="wallet">
+        <h2>Create Wallet</h2>
+        <p>Generate a new wallet for Bitcoin 2.0.</p>
+        <button id="createWalletBtn">Create Wallet</button>
+        <div id="walletInfo" class="block"></div>
+    </div>
+
+    <div class="blockchain">
+        <h2>Blockchain</h2>
+        <p>View the blockchain's current state.</p>
+        <button id="generateBlockBtn">Generate New Block</button>
+        <div id="blockchainInfo" class="block"></div>
+    </div>
+
+    <div class="mining">
+        <h2>Mining</h2>
+        <p>Mine new blocks to the network.</p>
+        <button id="startMiningBtn">Start Mining</button>
+        <div id="miningStatus" class="block"></div>
+    </div>
+</div>
+
+<script>
+    // Simple Bitcoin 2.0 Network Implementation in JavaScript
+
+    // Blockchain and Mining System (simplified)
+    class Blockchain {
+        constructor() {
+            this.chain = [];
+            this.pendingTransactions = [];
+            this.createGenesisBlock();
+        }
+
+        createGenesisBlock() {
+            const block = {
+                index: 0,
+                timestamp: Date.now(),
+                transactions: [],
+                previousHash: null,
+                hash: this.calculateHash(0, Date.now(), [], null),
+            };
+            this.chain.push(block);
+        }
+
+        calculateHash(index, timestamp, transactions, previousHash) {
+            return (index + timestamp + JSON.stringify(transactions) + previousHash).toString(36);
+        }
+
+        addBlock(block) {
+            this.chain.push(block);
+        }
+
+        minePendingTransactions() {
+            const lastBlock = this.chain[this.chain.length - 1];
+            const block = {
+                index: this.chain.length,
+                timestamp: Date.now(),
+                transactions: this.pendingTransactions,
+                previousHash: lastBlock.hash,
+                hash: this.calculateHash(this.chain.length, Date.now(), this.pendingTransactions, lastBlock.hash),
+            };
+            this.addBlock(block);
+            this.pendingTransactions = [];
+        }
+    }
+
+    // Wallet Creation
+    class Wallet {
+        constructor() {
+            this.privateKey = this.generatePrivateKey();
+            this.publicKey = this.generatePublicKey(this.privateKey);
+        }
+
+        generatePrivateKey() {
+            // In real-world cases, use a secure random key generation
+            return Math.random().toString(36).slice(2, 18);
+        }
+
+        generatePublicKey(privateKey) {
+            // A real wallet would use public/private key cryptography here
+            return privateKey.slice(0, 8) + 'pub';
+        }
+    }
+
+    // Initialize the blockchain and wallet
+    const blockchain = new Blockchain();
+    let wallet = null;
+
+    // Event Listeners
+    document.getElementById('createWalletBtn').addEventListener('click', () => {
+        wallet = new Wallet();
+        document.getElementById('walletInfo').innerHTML = `
+            <p><strong>Private Key:</strong> ${wallet.privateKey}</p>
+            <p><strong>Public Key:</strong> ${wallet.publicKey}</p>
+        `;
+    });
+
+    document.getElementById('generateBlockBtn').addEventListener('click', () => {
+        blockchain.minePendingTransactions();
+        const latestBlock = blockchain.chain[blockchain.chain.length - 1];
+        document.getElementById('blockchainInfo').innerHTML = `
+            <h3>Latest Block</h3>
+            <ul>
+                <li><strong>Index:</strong> ${latestBlock.index}</li>
+                <li><strong>Timestamp:</strong> ${new Date(latestBlock.timestamp).toLocaleString()}</li>
+                <li><strong>Hash:</strong> ${latestBlock.hash}</li>
+                <li><strong>Previous Hash:</strong> ${latestBlock.previousHash}</li>
+            </ul>
+        `;
+    });
+
+    document.getElementById('startMiningBtn').addEventListener('click', () => {
+        blockchain.minePendingTransactions();
+        document.getElementById('miningStatus').innerHTML = `
+            <p>Mining Complete! New block added to the blockchain.</p>
+        `;
+    });
+</script>
+
+</body>
+</html>
